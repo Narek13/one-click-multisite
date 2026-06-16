@@ -24,6 +24,28 @@ class MultisiteConverter
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
+        // wpdb only registers multisite table properties when is_multisite() or
+        // WP_ALLOW_MULTISITE is defined. Neither is true here (the prerequisite check
+        // enforces that), so we register them manually before doing anything else.
+        // Without this, every query in populate_network() runs against an empty table
+        // name, fails silently, and returns null — indistinguishable from success.
+        global $wpdb;
+        if (empty($wpdb->site)) {
+            $bp                     = $wpdb->base_prefix;
+            $wpdb->blogs            = $bp . 'blogs';
+            $wpdb->blogmeta         = $bp . 'blogmeta';
+            $wpdb->signups          = $bp . 'signups';
+            $wpdb->site             = $bp . 'site';
+            $wpdb->sitemeta         = $bp . 'sitemeta';
+            $wpdb->sitecategories   = $bp . 'sitecategories';
+            $wpdb->registration_log = $bp . 'registration_log';
+        }
+
+        // populate_network() only inserts rows — the tables themselves must be
+        // created first. make_db_current_silent('ms_global') runs CREATE TABLE IF
+        // NOT EXISTS for wp_blogs, wp_site, wp_sitemeta, wp_signups, etc.
+        make_db_current_silent('ms_global');
+
         $domain    = (string) parse_url(get_option('siteurl'), PHP_URL_HOST);
         $path      = (string) parse_url(get_option('siteurl'), PHP_URL_PATH);
         $path      = trailingslashit($path ?: '/');
@@ -34,7 +56,12 @@ class MultisiteConverter
         $networkError = populate_network(1, $domain, $adminEmail, $siteTitle, $path, (int) $subdomainInstall);
 
         if (is_wp_error($networkError)) {
-            return new ConversionResult(false, $networkError->get_error_message());
+            // 'siteid_exists' means the DB was already populated by a previous
+            // conversion attempt. The tables and rows are intact — we can still
+            // (re-)write wp-config.php and .htaccess.
+            if (!in_array('siteid_exists', $networkError->get_error_codes(), true)) {
+                return new ConversionResult(false, $networkError->get_error_message());
+            }
         }
 
         $configResult = $this->writeWpConfig($subdomainInstall, $domain, $path);
@@ -46,6 +73,8 @@ class MultisiteConverter
         if (!$htaccessResult->success()) {
             return $htaccessResult;
         }
+
+        wp_cache_flush();
 
         return new ConversionResult(true);
     }
