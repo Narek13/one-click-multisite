@@ -1,0 +1,12 @@
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+parameters:
+    level: 6
+    paths:
+        - ./src
+        - ./multisite-auto-enabler.php
+    excludePaths:
+        - ./vendor
+    treatPhpDocTypesAsCertain: false
+    checkMissingIterableValueType: false

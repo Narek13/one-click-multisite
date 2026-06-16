@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<ruleset name="Multisite Auto-Enabler">
+    <description>WordPress Coding Standards for Multisite Auto-Enabler plugin.</description>
+
+    <arg name="colors"/>
+    <arg value="sp"/>
+    <arg name="extensions" value="php"/>
+
+    <file>./src</file>
+    <file>./multisite-auto-enabler.php</file>
+    <file>./tests</file>
+
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+
+    <!-- WordPress ruleset -->
+    <rule ref="WordPress"/>
+    <rule ref="WordPress-Extra"/>
+    <rule ref="WordPress-Docs"/>
+
+    <!-- Enforce that all global functions/variables/constants are prefixed -->
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <properties>
+            <property name="prefixes" type="array">
+                <element value="multisite_auto_enabler"/>
+                <element value="MultisiteAutoEnabler"/>
+                <element value="mae"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Enforce text domain -->
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="multisite-auto-enabler"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- PHP version compatibility -->
+    <config name="testVersion" value="7.4-"/>
+    <config name="minimum_supported_wp_version" value="6.0"/>
+
+    <!-- Allow short array syntax -->
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+
+    <!-- OOP code: allow camelCase method names inside classes -->
+    <rule ref="WordPress.NamingConventions.ValidFunctionName">
+        <exclude-pattern>src/*</exclude-pattern>
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <!-- Type hints and strict declarations are intentional -->
+    <rule ref="Squiz.Commenting.FunctionComment.MissingParamComment">
+        <severity>0</severity>
+    </rule>
+</ruleset>
