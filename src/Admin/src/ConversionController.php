@@ -28,8 +28,8 @@ class ConversionController
         $result = $this->converter->convert($subdomainInstall);
 
         if ($result->success()) {
-            set_transient('multisite_auto_enabler_notice', 'success', 30);
-            wp_safe_redirect(network_admin_url());
+            set_transient('multisite_auto_enabler_notice', 'success', 120);
+            wp_safe_redirect(admin_url('tools.php?page=multisite-auto-enabler'));
             exit;
         }
 

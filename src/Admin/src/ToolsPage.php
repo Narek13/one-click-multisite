@@ -43,7 +43,18 @@ class ToolsPage
             <h1><?php esc_html_e('Convert to Multisite', 'multisite-auto-enabler'); ?></h1>
             <p class="mae-subtitle"><?php esc_html_e('Convert this single-site WordPress installation into a multisite network.', 'multisite-auto-enabler'); ?></p>
 
-            <?php if ($notice && strpos($notice, 'error:') === 0): ?>
+            <?php if ($notice === 'success'): ?>
+                <div class="notice notice-success mae-notice">
+                    <p>
+                        <strong><?php esc_html_e('Conversion complete!', 'multisite-auto-enabler'); ?></strong>
+                        <?php esc_html_e('Your site has been converted to a multisite network.', 'multisite-auto-enabler'); ?>
+                        <?php esc_html_e('Please log in again to access the Network Admin.', 'multisite-auto-enabler'); ?>
+                        <a href="<?php echo esc_url(admin_url('network/')); ?>">
+                            <?php esc_html_e('Go to Network Admin &rarr;', 'multisite-auto-enabler'); ?>
+                        </a>
+                    </p>
+                </div>
+            <?php elseif ($notice && strpos($notice, 'error:') === 0): ?>
                 <div class="notice notice-error mae-notice">
                     <p><?php echo esc_html(substr($notice, 6)); ?></p>
                 </div>
