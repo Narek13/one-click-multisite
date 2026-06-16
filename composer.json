@@ -1,0 +1,53 @@
+{
+    "name": "narekzakarian/multisite-auto-enabler",
+    "description": "Convert a single-site WordPress installation to multisite with one click.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Narek Zakarian",
+            "homepage": "https://github.com/narekzakarian",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.4 || ^8.0",
+        "psr/container": "^1.1 || ^2.0"
+    },
+    "require-dev": {
+        "antecedent/patchwork": "^2.1",
+        "brain/monkey": "^2.6",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+        "phpstan/phpstan": "^2.0",
+        "phpunit/phpunit": "^9.0",
+        "szepeviktor/phpstan-wordpress": "^2.0",
+        "wp-coding-standards/wpcs": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "MultisiteAutoEnabler\\": "src/",
+            "MultisiteAutoEnabler\\Admin\\": ["src/Admin/src/", "src/Admin/"],
+            "MultisiteAutoEnabler\\Conversion\\": ["src/Conversion/src/", "src/Conversion/"]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MultisiteAutoEnabler\\Tests\\": "tests/phpunit/"
+        }
+    },
+    "minimum-stability": "stable",
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "scripts": {
+        "phpcs": "@php ./vendor/bin/phpcs",
+        "phpcs:fix": "@php ./vendor/bin/phpcbf",
+        "phpstan": "@php ./vendor/bin/phpstan analyse --memory-limit=512M",
+        "phpunit": "@php ./vendor/bin/phpunit",
+        "test": ["@phpunit"]
+    }
+}
