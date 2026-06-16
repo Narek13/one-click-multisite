@@ -1,0 +1,182 @@
+/* Multisite Auto-Enabler — Admin Tools Page */
+
+.mae-wrap {
+    max-width: 800px;
+}
+
+.mae-subtitle {
+    color: #646970;
+    font-size: 14px;
+    margin-top: 4px;
+    margin-bottom: 20px;
+}
+
+.mae-notice {
+    max-width: 800px;
+}
+
+/* Cards */
+.mae-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.mae-card {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
+}
+
+.mae-card__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.mae-card__header h2 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    padding: 0;
+}
+
+.mae-card__body {
+    padding: 20px;
+}
+
+.mae-card__footer {
+    padding: 16px 20px;
+    border-top: 1px solid #f0f0f1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* Badge */
+.mae-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.mae-badge--pass {
+    background: #edfaef;
+    color: #1a7a2e;
+}
+
+.mae-badge--fail {
+    background: #fde8e8;
+    color: #b32d2e;
+}
+
+/* Rows (prerequisite checks) */
+.mae-card__rows {
+    padding: 8px 0;
+}
+
+.mae-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 20px;
+}
+
+.mae-row + .mae-row {
+    border-top: 1px solid #f6f7f7;
+}
+
+.mae-row__icon {
+    font-size: 16px;
+    line-height: 1.4;
+    flex-shrink: 0;
+    width: 20px;
+    text-align: center;
+}
+
+.mae-row--pass .mae-row__icon {
+    color: #1a7a2e;
+}
+
+.mae-row--fail .mae-row__icon {
+    color: #b32d2e;
+}
+
+.mae-row__body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.mae-row__label {
+    font-size: 14px;
+    color: #1d2327;
+}
+
+.mae-row__message {
+    font-size: 13px;
+    color: #b32d2e;
+}
+
+/* Options (subdirectory / subdomain) */
+.mae-options {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+}
+
+.mae-option {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 14px 16px;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    cursor: pointer;
+    flex: 1;
+    min-width: 200px;
+}
+
+.mae-option input[type="radio"] {
+    margin-bottom: 6px;
+}
+
+.mae-option__title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d2327;
+}
+
+.mae-option__example {
+    font-size: 12px;
+    color: #646970;
+    font-family: monospace;
+}
+
+.mae-option__note {
+    font-size: 12px;
+    color: #996800;
+    margin-top: 4px;
+}
+
+/* Warning text */
+.mae-warning {
+    font-size: 13px;
+    color: #646970;
+    margin: 0;
+    flex: 1;
+}
+
+.mae-btn-note {
+    font-size: 12px;
+    color: #646970;
+    display: block;
+    width: 100%;
+}
