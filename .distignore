@@ -3,7 +3,7 @@
 .git*
 .claude/
 .idea/
-.wp-env.json
+.ddev
 tests/
 node_modules/
 vendor/bin/
@@ -17,3 +17,4 @@ phpcs.xml*
 phpstan.neon*
 phpunit.xml*
 CLAUDE.md
+wp-cli.yml

@@ -10,9 +10,6 @@
     "engines": {
         "node": "^18.0 || ^20.0 || ^22.0"
     },
-    "devDependencies": {
-        "@wordpress/env": "^10.0.0"
-    },
     "scripts": {
         "setup": "composer install && npm ci",
         "phpcs": "vendor/bin/phpcs",
@@ -23,7 +20,6 @@
         "lint": "npm run phpcs && npm run phpstan",
         "lint:fix": "npm run phpcs:fix",
         "test": "npm run phpunit:no-cov",
-        "check": "npm run lint && npm run test",
-        "wp-env": "wp-env"
+        "check": "npm run lint && npm run test"
     }
 }

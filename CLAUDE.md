@@ -23,9 +23,13 @@ PSR-4 namespaces: `OneClickMultisite\` → `src/`, with dual-path mappings for s
 ## Local development
 
 ```bash
-composer install          # install deps + generate autoloader
-npm run wp-env start      # start a local WordPress instance via @wordpress/env
+composer install   # install deps + generate autoloader
+ddev start         # start DDEV; WordPress is downloaded and configured on first run
 ```
+
+DDEV provides PHP 8.1 for the dev toolchain (PHPUnit, PHPCS) even though production supports PHP 7.4+.
+
+Admin URL: https://one-click-multisite.ddev.site/wp-admin (admin / admin)
 
 ## Lint and test
 

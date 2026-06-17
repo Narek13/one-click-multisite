@@ -28,3 +28,6 @@
 
 # Build Output
 /assets/js/
+
+# DDEV WordPress Installation
+.ddev/wordpress
