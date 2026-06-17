@@ -9,4 +9,3 @@ parameters:
     excludePaths:
         - ./vendor
     treatPhpDocTypesAsCertain: false
-    checkMissingIterableValueType: false

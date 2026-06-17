@@ -24,7 +24,6 @@
             <property name="prefixes" type="array">
                 <element value="one_click_multisite"/>
                 <element value="OneClickMultisite"/>
-                <element value="ocm"/>
             </property>
         </properties>
     </rule>
@@ -42,12 +41,24 @@
     <config name="testVersion" value="7.4-"/>
     <config name="minimum_supported_wp_version" value="6.0"/>
 
-    <!-- Allow short array syntax -->
-    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
-
-    <!-- OOP code: allow camelCase method names inside classes -->
-    <rule ref="WordPress.NamingConventions.ValidFunctionName">
+    <!-- The plugin uses PascalCase class names inside namespaces (e.g. AdminModule).
+         WordPress.Files.FileName.InvalidClassFileName expects the filename to mirror the
+         class name lowercased without hyphens (class-adminmodule.php), which conflicts
+         with the conventional hyphenated form (class-admin-module.php). Since the files
+         already satisfy NotHyphenatedLowercase, exclude the class-name-match rule. -->
+    <rule ref="WordPress.Files.FileName.InvalidClassFileName">
         <exclude-pattern>src/*</exclude-pattern>
+    </rule>
+
+    <!-- Tests use PHPUnit naming (*Test.php, AbstractTestCase.php) which conflicts
+         with WordPress file naming conventions. Exclude file name checks for tests. -->
+    <rule ref="WordPress.Files.FileName">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <!-- PHPUnit lifecycle methods (setUp, tearDown) and test method names follow
+         PHPUnit conventions and cannot be renamed to snake_case. -->
+    <rule ref="WordPress.NamingConventions.ValidFunctionName">
         <exclude-pattern>tests/*</exclude-pattern>
     </rule>
 

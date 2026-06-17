@@ -24,11 +24,9 @@
         "wp-coding-standards/wpcs": "^3.0"
     },
     "autoload": {
-        "psr-4": {
-            "OneClickMultisite\\": "src/",
-            "OneClickMultisite\\Admin\\": ["src/Admin/src/", "src/Admin/"],
-            "OneClickMultisite\\Conversion\\": ["src/Conversion/src/", "src/Conversion/"]
-        }
+        "classmap": [
+            "src/"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
