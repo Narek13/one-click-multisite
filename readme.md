@@ -1,4 +1,4 @@
-# Multisite Auto-Enabler
+# One Click Multisite
 
 Convert your single WordPress site into a multisite network with **one click**.
 

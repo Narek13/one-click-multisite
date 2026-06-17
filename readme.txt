@@ -1,4 +1,4 @@
-=== Multisite Auto-Enabler ===
+=== One Click Multisite ===
 Contributors: narekzakarian
 Tags: multisite, network, convert, wp-config, tools
 Requires at least: 6.0
@@ -12,7 +12,7 @@ Convert a single-site WordPress installation to a multisite network with one cli
 
 == Description ==
 
-Multisite Auto-Enabler adds a **Convert to Multisite** page under the WordPress Tools menu. With a single button click it:
+One Click Multisite adds a **Convert to Multisite** page under the WordPress Tools menu. With a single button click it:
 
 * Runs a prerequisites check (writable wp-config.php, writable .htaccess, not already multisite)
 * Creates the multisite network database tables via WordPress core functions
@@ -26,7 +26,7 @@ You can choose between **sub-directory** (example.com/site1) and **sub-domain** 
 
 == Installation ==
 
-1. Upload the `multisite-auto-enabler` folder to `/wp-content/plugins/`.
+1. Upload the `one-click-multisite` folder to `/wp-content/plugins/`.
 2. Run `composer install --no-dev` inside the plugin folder (or download the release zip which includes the autoloader).
 3. Activate the plugin from the Plugins screen.
 4. Go to **Tools > Convert to Multisite**.
@@ -49,17 +49,5 @@ PHP 7.4 or newer.
 
 == Changelog ==
 
-= 2.0.0 =
-* Full rewrite with modular OOP architecture.
-* Added prerequisites checker with clear pass/fail indicators.
-* Added sub-directory vs sub-domain choice on the tools page.
-* Conversion now runs entirely from Tools > Convert to Multisite (no intermediate network setup page).
-* Follows WordPress coding standards throughout.
-
 = 1.0.0 =
 * Initial release.
-
-== Upgrade Notice ==
-
-= 2.0.0 =
-Major rewrite. If you used 1.0, deactivate it first and re-run conversion from the new Tools page.
