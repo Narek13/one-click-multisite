@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MultisiteAutoEnabler\Tests;
+namespace OneClickMultisite\Tests;
 
 use Brain\Monkey;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;

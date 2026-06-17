@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MultisiteAutoEnabler\Tests\Unit\Conversion;
+namespace OneClickMultisite\Tests\Unit\Conversion;
 
-use MultisiteAutoEnabler\Conversion\PrerequisiteChecker;
-use MultisiteAutoEnabler\Conversion\PrerequisiteResult;
-use MultisiteAutoEnabler\Tests\AbstractTestCase;
+use OneClickMultisite\Conversion\PrerequisiteChecker;
+use OneClickMultisite\Conversion\PrerequisiteResult;
+use OneClickMultisite\Tests\AbstractTestCase;
 use Brain\Monkey\Functions;
 
 class PrerequisiteCheckerTest extends AbstractTestCase

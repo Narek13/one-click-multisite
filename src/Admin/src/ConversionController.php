@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MultisiteAutoEnabler\Admin;
+namespace OneClickMultisite\Admin;
 
-use MultisiteAutoEnabler\Conversion\MultisiteConverter;
+use OneClickMultisite\Conversion\MultisiteConverter;
 
 class ConversionController
 {
@@ -17,10 +17,10 @@ class ConversionController
 
     public function handle(): void
     {
-        check_admin_referer('multisite_auto_enabler_convert');
+        check_admin_referer('one_click_multisite_convert');
 
         if (!current_user_can('manage_options')) {
-            wp_die(esc_html__('You do not have permission to perform this action.', 'multisite-auto-enabler'));
+            wp_die(esc_html__('You do not have permission to perform this action.', 'one-click-multisite'));
         }
 
         $subdomainInstall = isset($_POST['subdomain_install']) && sanitize_key($_POST['subdomain_install']) === '1';
@@ -28,18 +28,18 @@ class ConversionController
         $result = $this->converter->convert($subdomainInstall);
 
         if ($result->success()) {
-            set_transient('multisite_auto_enabler_notice', 'success', 120);
-            wp_safe_redirect(admin_url('tools.php?page=multisite-auto-enabler'));
+            set_transient('one_click_multisite_notice', 'success', 120);
+            wp_safe_redirect(admin_url('tools.php?page=one-click-multisite'));
             exit;
         }
 
         set_transient(
-            'multisite_auto_enabler_notice',
+            'one_click_multisite_notice',
             'error:' . $result->message(),
             30
         );
 
-        wp_safe_redirect(admin_url('tools.php?page=multisite-auto-enabler'));
+        wp_safe_redirect(admin_url('tools.php?page=one-click-multisite'));
         exit;
     }
 }

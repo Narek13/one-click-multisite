@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MultisiteAutoEnabler\Conversion;
+namespace OneClickMultisite\Conversion;
 
 class MultisiteConverter
 {
@@ -18,7 +18,7 @@ class MultisiteConverter
         if (!$this->checker->allPass()) {
             return new ConversionResult(
                 false,
-                __('One or more prerequisites are not met.', 'multisite-auto-enabler')
+                __('One or more prerequisites are not met.', 'one-click-multisite')
             );
         }
 
@@ -83,12 +83,12 @@ class MultisiteConverter
     {
         $configFile = $this->checker->findWpConfig();
         if ($configFile === null) {
-            return new ConversionResult(false, __('wp-config.php not found.', 'multisite-auto-enabler'));
+            return new ConversionResult(false, __('wp-config.php not found.', 'one-click-multisite'));
         }
 
         $contents = (string) file_get_contents($configFile);
         if ($contents === '') {
-            return new ConversionResult(false, __('wp-config.php is empty or unreadable.', 'multisite-auto-enabler'));
+            return new ConversionResult(false, __('wp-config.php is empty or unreadable.', 'one-click-multisite'));
         }
 
         $subdomainValue = $subdomainInstall ? 'true' : 'false';
@@ -116,7 +116,7 @@ PHP;
         }
 
         if (file_put_contents($configFile, $contents) === false) {
-            return new ConversionResult(false, __('Could not write to wp-config.php.', 'multisite-auto-enabler'));
+            return new ConversionResult(false, __('Could not write to wp-config.php.', 'one-click-multisite'));
         }
 
         return new ConversionResult(true);
@@ -162,7 +162,7 @@ PHP;
         $inserted = insert_with_markers($htaccessFile, 'WordPress', $lines);
 
         if (!$inserted) {
-            return new ConversionResult(false, __('Could not write to .htaccess.', 'multisite-auto-enabler'));
+            return new ConversionResult(false, __('Could not write to .htaccess.', 'one-click-multisite'));
         }
 
         return new ConversionResult(true);

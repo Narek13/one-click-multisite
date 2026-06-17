@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Plugin Name:       Multisite Auto-Enabler
- * Plugin URI:        https://github.com/narekzakarian/multisite-auto-enabler
+ * Plugin Name:       One Click Multisite
+ * Plugin URI:        https://github.com/narekzakarian/one-click-multisite
  * Description:       Convert a single-site WordPress installation to a multisite network with one click from Tools &gt; Convert to Multisite.
  * Version:           1.0.0
  * Author:            Narek Zakarian
  * Author URI:        https://github.com/narekzakarian
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       multisite-auto-enabler
+ * Text Domain:       one-click-multisite
  * Domain Path:       /languages
  * Requires at least: 6.0
  * Requires PHP:      7.4
@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace MultisiteAutoEnabler;
+namespace OneClickMultisite;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -30,7 +30,7 @@ function handleError(string $message): void
         'all_admin_notices',
         static function () use ($message): void {
             printf(
-                '<div class="notice notice-error"><p><strong>Multisite Auto-Enabler:</strong> %s</p></div>',
+                '<div class="notice notice-error"><p><strong>One Click Multisite:</strong> %s</p></div>',
                 wp_kses_post($message)
             );
         }
@@ -44,7 +44,7 @@ function initialize(): void
         handleError(
             sprintf(
                 /* translators: %s: path to the plugin directory */
-                __('Autoloader not found. Please run <code>composer install</code> in %s.', 'multisite-auto-enabler'),
+                __('Autoloader not found. Please run <code>composer install</code> in %s.', 'one-click-multisite'),
                 esc_html(__DIR__)
             )
         );
@@ -55,7 +55,7 @@ function initialize(): void
 
     try {
         Plugin::new(PluginProperties::new(__FILE__))
-            ->addModule(new MultisiteAutoEnablerModule(__FILE__))
+            ->addModule(new OneClickMultisiteModule(__FILE__))
             ->addModule(new Conversion\ConversionModule())
             ->addModule(new Admin\AdminModule())
             ->boot();
@@ -72,7 +72,7 @@ function initialize(): void
 
 add_action('init', static function (): void {
     load_plugin_textdomain(
-        'multisite-auto-enabler',
+        'one-click-multisite',
         false,
         dirname(plugin_basename(__FILE__)) . '/languages'
     );

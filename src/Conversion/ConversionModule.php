@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MultisiteAutoEnabler\Conversion;
+namespace OneClickMultisite\Conversion;
 
-use MultisiteAutoEnabler\Module\ServiceModule;
+use OneClickMultisite\Module\ServiceModule;
 
 class ConversionModule implements ServiceModule
 {

@@ -14,11 +14,11 @@ Modular OOP design without an external DI container:
 - `src/Plugin.php` — bootstrapper (equivalent to `Inpsyde\Modularity\Package`)
 - `src/Container.php` — minimal PSR-11 container
 - `src/Module/ServiceModule.php` / `ExecutableModule.php` — interfaces
-- `src/MultisiteAutoEnablerModule.php` — root services (url, basename, version)
+- `src/OneClickMultisiteModule.php` — root services (url, basename, version)
 - `src/Conversion/` — `PrerequisiteChecker`, `MultisiteConverter` and value objects
 - `src/Admin/` — `AdminModule`, `ToolsPage`, `ConversionController`
 
-PSR-4 namespaces: `MultisiteAutoEnabler\` → `src/`, with dual-path mappings for sub-modules (see `composer.json`).
+PSR-4 namespaces: `OneClickMultisite\` → `src/`, with dual-path mappings for sub-modules (see `composer.json`).
 
 ## Local development
 

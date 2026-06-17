@@ -1,5 +1,5 @@
 {
-    "name": "narekzakarian/multisite-auto-enabler",
+    "name": "narekzakarian/one-click-multisite",
     "description": "Convert a single-site WordPress installation to multisite with one click.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
@@ -25,14 +25,14 @@
     },
     "autoload": {
         "psr-4": {
-            "MultisiteAutoEnabler\\": "src/",
-            "MultisiteAutoEnabler\\Admin\\": ["src/Admin/src/", "src/Admin/"],
-            "MultisiteAutoEnabler\\Conversion\\": ["src/Conversion/src/", "src/Conversion/"]
+            "OneClickMultisite\\": "src/",
+            "OneClickMultisite\\Admin\\": ["src/Admin/src/", "src/Admin/"],
+            "OneClickMultisite\\Conversion\\": ["src/Conversion/src/", "src/Conversion/"]
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "MultisiteAutoEnabler\\Tests\\": "tests/phpunit/"
+            "OneClickMultisite\\Tests\\": "tests/phpunit/"
         }
     },
     "minimum-stability": "stable",

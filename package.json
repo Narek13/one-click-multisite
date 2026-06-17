@@ -1,5 +1,5 @@
 {
-    "name": "multisite-auto-enabler",
+    "name": "one-click-multisite",
     "description": "Convert a single-site WordPress installation to a multisite network with one click.",
     "version": "2.0.0",
     "license": "GPL-2.0-or-later",

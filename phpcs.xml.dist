@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
-<ruleset name="Multisite Auto-Enabler">
-    <description>WordPress Coding Standards for Multisite Auto-Enabler plugin.</description>
+<ruleset name="One Click Multisite">
+    <description>WordPress Coding Standards for One Click Multisite plugin.</description>
 
     <arg name="colors"/>
     <arg value="sp"/>
     <arg name="extensions" value="php"/>
 
     <file>./src</file>
-    <file>./multisite-auto-enabler.php</file>
+    <file>./one-click-multisite.php</file>
     <file>./tests</file>
 
     <exclude-pattern>*/vendor/*</exclude-pattern>
@@ -22,9 +22,9 @@
     <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
         <properties>
             <property name="prefixes" type="array">
-                <element value="multisite_auto_enabler"/>
-                <element value="MultisiteAutoEnabler"/>
-                <element value="mae"/>
+                <element value="one_click_multisite"/>
+                <element value="OneClickMultisite"/>
+                <element value="ocm"/>
             </property>
         </properties>
     </rule>
@@ -33,7 +33,7 @@
     <rule ref="WordPress.WP.I18n">
         <properties>
             <property name="text_domain" type="array">
-                <element value="multisite-auto-enabler"/>
+                <element value="one-click-multisite"/>
             </property>
         </properties>
     </rule>

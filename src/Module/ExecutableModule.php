@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MultisiteAutoEnabler\Module;
+namespace OneClickMultisite\Module;
 
 use Psr\Container\ContainerInterface;
 

@@ -1,6 +1,6 @@
 {
     "mappings": {
-        "wp-content/plugins/multisite-auto-enabler": "."
+        "wp-content/plugins/one-click-multisite": "."
     },
     "phpVersion": "7.4",
     "config": {

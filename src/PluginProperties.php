@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MultisiteAutoEnabler;
+namespace OneClickMultisite;
 
 class PluginProperties
 {

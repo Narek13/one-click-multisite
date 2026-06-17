@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace MultisiteAutoEnabler;
+namespace OneClickMultisite;
 
-use MultisiteAutoEnabler\Module\ServiceModule;
+use OneClickMultisite\Module\ServiceModule;
 use Psr\Container\ContainerInterface;
 
-class MultisiteAutoEnablerModule implements ServiceModule
+class OneClickMultisiteModule implements ServiceModule
 {
     private string $pluginFile;
 
@@ -21,13 +21,13 @@ class MultisiteAutoEnablerModule implements ServiceModule
         $pluginFile = $this->pluginFile;
 
         return [
-            'multisite-auto-enabler.plugin-basename' => static function () use ($pluginFile): string {
+            'one-click-multisite.plugin-basename' => static function () use ($pluginFile): string {
                 return plugin_basename($pluginFile);
             },
-            'multisite-auto-enabler.plugin-url' => static function () use ($pluginFile): string {
+            'one-click-multisite.plugin-url' => static function () use ($pluginFile): string {
                 return plugin_dir_url($pluginFile);
             },
-            'multisite-auto-enabler.plugin-version' => static function () use ($pluginFile): string {
+            'one-click-multisite.plugin-version' => static function () use ($pluginFile): string {
                 $data = get_file_data($pluginFile, ['Version' => 'Version']);
                 return $data['Version'] ?? '1.0.0';
             },

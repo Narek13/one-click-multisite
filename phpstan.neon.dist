@@ -5,7 +5,7 @@ parameters:
     level: 6
     paths:
         - ./src
-        - ./multisite-auto-enabler.php
+        - ./one-click-multisite.php
     excludePaths:
         - ./vendor
     treatPhpDocTypesAsCertain: false

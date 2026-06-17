@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MultisiteAutoEnabler;
+namespace OneClickMultisite;
 
-use MultisiteAutoEnabler\Module\ExecutableModule;
-use MultisiteAutoEnabler\Module\ServiceModule;
+use OneClickMultisite\Module\ExecutableModule;
+use OneClickMultisite\Module\ServiceModule;
 
 class Plugin
 {

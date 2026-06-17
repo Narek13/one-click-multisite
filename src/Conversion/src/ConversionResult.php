@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MultisiteAutoEnabler\Conversion;
+namespace OneClickMultisite\Conversion;
 
 class ConversionResult
 {

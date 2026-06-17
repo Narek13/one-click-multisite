@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MultisiteAutoEnabler\Conversion;
+namespace OneClickMultisite\Conversion;
 
 class PrerequisiteChecker
 {
@@ -30,13 +30,13 @@ class PrerequisiteChecker
 
     private function checkSingleSite(): PrerequisiteResult
     {
-        $label = __('Single site installation', 'multisite-auto-enabler');
+        $label = __('Single site installation', 'one-click-multisite');
 
         if (is_multisite()) {
             return new PrerequisiteResult(
                 $label,
                 false,
-                __('This site is already running as a multisite network.', 'multisite-auto-enabler')
+                __('This site is already running as a multisite network.', 'one-click-multisite')
             );
         }
 
@@ -44,7 +44,7 @@ class PrerequisiteChecker
             return new PrerequisiteResult(
                 $label,
                 false,
-                __('WP_ALLOW_MULTISITE is already defined. A previous conversion may be incomplete.', 'multisite-auto-enabler')
+                __('WP_ALLOW_MULTISITE is already defined. A previous conversion may be incomplete.', 'one-click-multisite')
             );
         }
 
@@ -53,14 +53,14 @@ class PrerequisiteChecker
 
     private function checkWpConfigWritable(): PrerequisiteResult
     {
-        $label  = __('wp-config.php is writable', 'multisite-auto-enabler');
+        $label  = __('wp-config.php is writable', 'one-click-multisite');
         $config = $this->findWpConfig();
 
         if ($config === null) {
             return new PrerequisiteResult(
                 $label,
                 false,
-                __('wp-config.php could not be located.', 'multisite-auto-enabler')
+                __('wp-config.php could not be located.', 'one-click-multisite')
             );
         }
 
@@ -68,7 +68,7 @@ class PrerequisiteChecker
             return new PrerequisiteResult(
                 $label,
                 false,
-                __('wp-config.php is not writable. Please check file permissions.', 'multisite-auto-enabler')
+                __('wp-config.php is not writable. Please check file permissions.', 'one-click-multisite')
             );
         }
 
@@ -77,14 +77,14 @@ class PrerequisiteChecker
 
     private function checkHtaccessWritable(): PrerequisiteResult
     {
-        $label    = __('.htaccess is writable', 'multisite-auto-enabler');
+        $label    = __('.htaccess is writable', 'one-click-multisite');
         $htaccess = ABSPATH . '.htaccess';
 
         if (file_exists($htaccess) && !is_writable($htaccess)) {
             return new PrerequisiteResult(
                 $label,
                 false,
-                __('.htaccess exists but is not writable. Please check file permissions.', 'multisite-auto-enabler')
+                __('.htaccess exists but is not writable. Please check file permissions.', 'one-click-multisite')
             );
         }
 
@@ -92,7 +92,7 @@ class PrerequisiteChecker
             return new PrerequisiteResult(
                 $label,
                 false,
-                __('The WordPress root directory is not writable. Cannot create .htaccess.', 'multisite-auto-enabler')
+                __('The WordPress root directory is not writable. Cannot create .htaccess.', 'one-click-multisite')
             );
         }
 

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace MultisiteAutoEnabler\Admin;
+namespace OneClickMultisite\Admin;
 
-use MultisiteAutoEnabler\Conversion\MultisiteConverter;
-use MultisiteAutoEnabler\Conversion\PrerequisiteChecker;
-use MultisiteAutoEnabler\Module\ExecutableModule;
-use MultisiteAutoEnabler\Module\ServiceModule;
+use OneClickMultisite\Conversion\MultisiteConverter;
+use OneClickMultisite\Conversion\PrerequisiteChecker;
+use OneClickMultisite\Module\ExecutableModule;
+use OneClickMultisite\Module\ServiceModule;
 use Psr\Container\ContainerInterface;
 
 class AdminModule implements ServiceModule, ExecutableModule
@@ -28,20 +28,20 @@ class AdminModule implements ServiceModule, ExecutableModule
     {
         $page       = $container->get(ToolsPage::class);
         $controller = $container->get(ConversionController::class);
-        $basename   = $container->get('multisite-auto-enabler.plugin-basename');
-        $pluginUrl  = $container->get('multisite-auto-enabler.plugin-url');
-        $version    = $container->get('multisite-auto-enabler.plugin-version');
+        $basename   = $container->get('one-click-multisite.plugin-basename');
+        $pluginUrl  = $container->get('one-click-multisite.plugin-url');
+        $version    = $container->get('one-click-multisite.plugin-version');
 
         add_action('admin_menu', [$page, 'register']);
 
         add_action(
             'admin_enqueue_scripts',
             static function (string $hookSuffix) use ($pluginUrl, $version): void {
-                if ($hookSuffix !== 'tools_page_multisite-auto-enabler') {
+                if ($hookSuffix !== 'tools_page_one-click-multisite') {
                     return;
                 }
                 wp_enqueue_style(
-                    'multisite-auto-enabler',
+                    'one-click-multisite',
                     $pluginUrl . 'assets/css/admin.css',
                     [],
                     $version
@@ -52,14 +52,14 @@ class AdminModule implements ServiceModule, ExecutableModule
         add_filter(
             'plugin_action_links_' . $basename,
             static function (array $links): array {
-                $url   = admin_url('tools.php?page=multisite-auto-enabler');
-                $label = __('Convert to Multisite', 'multisite-auto-enabler');
+                $url   = admin_url('tools.php?page=one-click-multisite');
+                $label = __('Convert to Multisite', 'one-click-multisite');
                 $link  = '<a href="' . esc_url($url) . '">' . esc_html($label) . '</a>';
-                return array_merge(['mae-settings' => $link], $links);
+                return array_merge(['ocm-settings' => $link], $links);
             }
         );
 
-        add_action('admin_post_multisite_auto_enabler_convert', [$controller, 'handle']);
+        add_action('admin_post_one_click_multisite_convert', [$controller, 'handle']);
 
         return true;
     }

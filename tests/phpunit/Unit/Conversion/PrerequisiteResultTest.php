@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MultisiteAutoEnabler\Tests\Unit\Conversion;
+namespace OneClickMultisite\Tests\Unit\Conversion;
 
-use MultisiteAutoEnabler\Conversion\PrerequisiteResult;
-use MultisiteAutoEnabler\Tests\AbstractTestCase;
+use OneClickMultisite\Conversion\PrerequisiteResult;
+use OneClickMultisite\Tests\AbstractTestCase;
 
 class PrerequisiteResultTest extends AbstractTestCase
 {

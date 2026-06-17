@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace MultisiteAutoEnabler\Tests\Unit\Conversion;
+namespace OneClickMultisite\Tests\Unit\Conversion;
 
-use MultisiteAutoEnabler\Conversion\ConversionResult;
-use MultisiteAutoEnabler\Tests\AbstractTestCase;
+use OneClickMultisite\Conversion\ConversionResult;
+use OneClickMultisite\Tests\AbstractTestCase;
 
 class ConversionResultTest extends AbstractTestCase
 {
