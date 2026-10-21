@@ -1,94 +1,65 @@
 <?php
 /**
  * Plugin Name:       One Click Multisite
- * Plugin URI:        https://github.com/narekzakarian/one-click-multisite
- * Description:       Convert a single-site WordPress installation to a multisite network with one click from Tools &gt; Convert to Multisite.
+ * Description:       Convert a single-site WordPress installation into a multisite network with one click from Tools > Convert to Multisite.
  * Version:           1.0.0
+ * Requires at least: 6.4
+ * Requires PHP:      8.1
  * Author:            Narek Zakarian
- * Author URI:        https://github.com/narekzakarian
+ * Author URI:        https://profile.wordpress.org/nareknovembit
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       one-click-multisite
  * Domain Path:       /languages
- * Requires at least: 6.0
- * Requires PHP:      7.4
- * Network:           false
  *
  * @package OneClickMultisite
  */
 
-declare( strict_types=1 );
+declare(strict_types=1);
 
-namespace OneClickMultisite;
+// No direct access.
+defined( 'ABSPATH' ) || exit;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if ( defined( 'ONE_CLICK_MULTISITE_VERSION' ) ) {
+	return;
 }
 
-/**
- * Displays an admin notice for bootstrap errors.
+define( 'ONE_CLICK_MULTISITE_VERSION', '1.0.0' );
+define( 'ONE_CLICK_MULTISITE_FILE', __FILE__ );
+define( 'ONE_CLICK_MULTISITE_DIR', plugin_dir_path( __FILE__ ) );
+define( 'ONE_CLICK_MULTISITE_URL', plugin_dir_url( __FILE__ ) );
+
+/*
+ * Autoloading.
  *
- * @param string $message The error message (may contain safe HTML).
- * @return void
+ * Prefer Composer's autoloader if the plugin has been built (vendor/ present).
+ * Otherwise fall back to a tiny PSR-4 autoloader so the plugin runs as soon as
+ * it's dropped into wp-content/plugins, no build step required.
  */
-function one_click_multisite_handle_error( string $message ): void {
-	add_action(
-		'all_admin_notices',
-		static function () use ( $message ): void {
-			printf(
-				'<div class="notice notice-error"><p><strong>One Click Multisite:</strong> %s</p></div>',
-				wp_kses_post( $message )
-			);
+if ( is_readable( ONE_CLICK_MULTISITE_DIR . 'vendor/autoload.php' ) ) {
+	require ONE_CLICK_MULTISITE_DIR . 'vendor/autoload.php';
+} else {
+	spl_autoload_register(
+		static function ( string $class_name ): void {
+			$prefix = 'OneClickMultisite\\';
+			if ( ! str_starts_with( $class_name, $prefix ) ) {
+				return;
+			}
+			$relative = substr( $class_name, strlen( $prefix ) );
+			$path     = ONE_CLICK_MULTISITE_DIR . 'src/' . str_replace( '\\', '/', $relative ) . '.php';
+			if ( is_readable( $path ) ) {
+				require $path;
+			}
 		}
 	);
 }
 
-/**
- * Initializes the plugin.
- *
- * @return void
- */
-function one_click_multisite_initialize(): void {
-	$autoload = __DIR__ . '/vendor/autoload.php';
-	if ( ! is_readable( $autoload ) ) {
-		one_click_multisite_handle_error(
-			sprintf(
-				/* translators: %s: path to the plugin directory */
-				__( 'Autoloader not found. Please run <code>composer install</code> in %s.', 'one-click-multisite' ),
-				esc_html( __DIR__ )
-			)
-		);
-		return;
-	}
+use OneClickMultisite\Plugin;
 
-	require_once $autoload;
-
-	try {
-		Plugin::new( PluginProperties::new( __FILE__ ) )
-			->add_module( new OneClickMultisiteModule( __FILE__ ) )
-			->add_module( new Conversion\ConversionModule() )
-			->add_module( new Admin\AdminModule() )
-			->boot();
-	} catch ( \Throwable $e ) {
-		one_click_multisite_handle_error(
-			sprintf(
-				'<strong>%s</strong><br><pre>%s</pre>',
-				esc_html( $e->getMessage() ),
-				esc_html( $e->getTraceAsString() )
-			)
-		);
-	}
-}
-
+// Boot once WordPress and all plugins are loaded.
 add_action(
-	'init',
+	'plugins_loaded',
 	static function (): void {
-		load_plugin_textdomain(
-			'one-click-multisite',
-			false,
-			dirname( plugin_basename( __FILE__ ) ) . '/languages'
-		);
+		Plugin::instance()->boot();
 	}
 );
-
-add_action( 'plugins_loaded', __NAMESPACE__ . '\\one_click_multisite_initialize' );
