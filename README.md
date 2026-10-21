@@ -1,42 +1,37 @@
 # One Click Multisite
 
-Convert your single WordPress site into a multisite network with **one click**.
+Convert a single-site WordPress installation into a multisite network from **Tools → Convert to Multisite**, without hand-editing wp-config.php or .htaccess.
 
-![WordPress version](https://img.shields.io/badge/WordPress-6.0%2B-blue)  
-![PHP version](https://img.shields.io/badge/PHP-8.0%2B-green)
+Status: **1.0.0, not yet released on WordPress.org**. See [SUBMISSION.md](SUBMISSION.md).
 
----
+## How it works
 
-## 🚀 Features
+The plugin runs WordPress core's own network installer, the same code behind Tools → Network Setup. It then applies the two snippets that screen normally asks you to paste:
 
-- One-click conversion from single-site to multisite.
-- Automatically configures `wp-config.php` and `.htaccess`.
-- Integrates with the native **Network Setup** screen.
-- Removes the manual setup guide and replaces it with an action button.
+1. **Prerequisites.** The site must be a single site, wp-config.php must be writable with direct file system access, and the site address must not use a non-standard port. Network types WordPress disallows on this install are disabled. Servers that ignore .htaccess (nginx) get a warning instead of a block.
+2. **Network tables.** `install_network()` and `populate_network()`, exactly as `wp-admin/network.php` calls them.
+3. **.htaccess.** The multisite rules core prints, written with `insert_with_markers()`.
+4. **wp-config.php.** The multisite constants, inserted above the "stop editing" line. Values are escaped with `var_export()`, existing constants are skipped, and the file keeps its permissions.
+5. **Network Admin.** The admin lands there, with a notice listing any follow-up (wildcard DNS, nginx rules).
 
----
+Design notes: [docs/architecture.md](docs/architecture.md) and [adr/](adr/).
 
-## 🛠 Installation
+## Requirements
 
-1. Upload the plugin to your `/wp-content/plugins/` directory.
-2. Activate it via the WordPress admin panel.
-3. Navigate to **Tools → Network Setup**.
-4. Choose between **Subdomains** or **Subdirectories**.
-5. Click the “**Finish Multisite Setup Automatically**” button.
+- WordPress 6.4+
+- PHP 8.1+
+- Direct file system access (no FTP/SSH credential prompt)
+- Apache with mod_rewrite for automatic rewrite rules; on nginx, add them to the server config by hand
 
----
-
-## 🧰 Development
-
-### Requirements
-
-- PHP 8.0+
-- WordPress 6.0+
-- Composer (for linting and dev tools)
-
-### Coding Standards
+## Development
 
 ```bash
 composer install
-composer run lint     # Check coding standards
-composer run lint:fix # Auto-fix issues
+ddev start          # WordPress on Apache, plugin activated (see SETUP.md)
+composer test       # PHPCS + PHPStan + PHPUnit
+bash bin/build-zip.sh
+```
+
+## License
+
+GPL-2.0-or-later
