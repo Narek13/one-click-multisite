@@ -1,51 +1,60 @@
 {
     "name": "narekzakarian/one-click-multisite",
-    "description": "Convert a single-site WordPress installation to multisite with one click.",
     "type": "wordpress-plugin",
+    "description": "Convert a single-site WordPress installation into a multisite network with one click.",
     "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "Narek Zakarian",
-            "homepage": "https://github.com/narekzakarian",
             "role": "Developer"
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0",
-        "psr/container": "^1.1 || ^2.0"
+        "php": ">=8.1"
     },
     "require-dev": {
         "antecedent/patchwork": "^2.1",
         "brain/monkey": "^2.6",
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
-        "phpstan/phpstan": "^2.0",
-        "phpunit/phpunit": "^9.0",
+        "phpcompatibility/phpcompatibility-wp": "^2.1",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpunit/phpunit": "^9.6",
+        "squizlabs/php_codesniffer": "^3.10",
         "szepeviktor/phpstan-wordpress": "^2.0",
-        "wp-coding-standards/wpcs": "^3.0"
+        "wp-coding-standards/wpcs": "^3.1"
     },
     "autoload": {
-        "classmap": [
-            "src/"
-        ]
+        "psr-4": {
+            "OneClickMultisite\\": "src/"
+        }
     },
     "autoload-dev": {
         "psr-4": {
             "OneClickMultisite\\Tests\\": "tests/phpunit/"
         }
     },
-    "minimum-stability": "stable",
-    "config": {
-        "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
-        },
-        "optimize-autoloader": true,
-        "sort-packages": true
-    },
     "scripts": {
         "phpcs": "@php ./vendor/bin/phpcs",
         "phpcs:fix": "@php ./vendor/bin/phpcbf",
-        "phpstan": "@php ./vendor/bin/phpstan analyse --memory-limit=512M",
+        "phpstan": "@php ./vendor/bin/phpstan analyse --memory-limit=1G",
         "phpunit": "@php ./vendor/bin/phpunit",
-        "test": ["@phpunit"]
-    }
+        "test": [
+            "@phpcs",
+            "@phpstan",
+            "@phpunit"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true,
+        "platform": {
+            "php": "8.1"
+        },
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }

@@ -1,33 +1,33 @@
-# Include Claude Code, skip local configuration
-!/.claude
-*.local.json
-*.local.md
+# Dependencies
+/vendor/
+/node_modules/
 
-# Code Style & Testing
+# Local tool overrides
 /phpcs.xml
 /phpunit.xml
 /phpstan.neon
 
-# Environment & Configuration
+# Caches & temp
+/temp/
+*.log
+.phpunit.result.cache
+
+# DDEV's WordPress install (core is downloaded, not committed)
+/.ddev/wordpress
+
+# Environment / secrets
 /.env*
 /auth.json
 
-# IDE & System Files
+# Claude Code: check in shared config, ignore personal/local overrides
+!/.claude
+*.local.json
+*.local.md
+
+# IDE & OS
 .DS_Store
 /.idea/
+/.vscode/
 
-# Logs & Cache
-*.log
-/.phpunit.cache/
-/.phpunit.result.cache
-/temp/
-
-# Package Management
-/node_modules/
-/vendor/
-
-# Build Output
-/assets/js/
-
-# DDEV WordPress Installation
-.ddev/wordpress
+# Release builds
+/dist/

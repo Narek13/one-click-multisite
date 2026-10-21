@@ -1,1 +1,5 @@
 path: .ddev/wordpress
+
+# DDEV serves the site with Apache; tell WP-CLI so `wp rewrite flush --hard` writes .htaccess.
+apache_modules:
+  - mod_rewrite

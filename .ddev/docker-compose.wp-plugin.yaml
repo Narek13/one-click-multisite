@@ -1,3 +1,6 @@
+# Mount the plugin repo (this folder) into the DDEV-managed WordPress install
+# as a plugin, read-only. WP core lives in .ddev/wordpress (gitignored); the
+# plugin source is this repo root, so there's no symlink recursion.
 services:
   web:
     volumes:

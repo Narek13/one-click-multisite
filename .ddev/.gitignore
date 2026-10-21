@@ -6,7 +6,8 @@
 /apache
 /commands/db
 /commands/host
-/commands/web
+/**/*.example
+/commands/web/README.txt
 /db-build
 /db_snapshots
 /homeadditions

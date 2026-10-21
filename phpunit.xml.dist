@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.0/phpunit.xsd"
+    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
     cacheResultFile="temp/.phpunit.result.cache"
     colors="true"
     bootstrap="tests/phpunit/bootstrap.php"
@@ -10,9 +10,6 @@
         <include>
             <directory suffix=".php">./src</directory>
         </include>
-        <report>
-            <html outputDirectory="temp/phpunit-html-coverage"/>
-        </report>
     </coverage>
     <testsuites>
         <testsuite name="unit">

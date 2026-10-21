@@ -1,0 +1,52 @@
+name: Build & Distribute
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build plugin zip
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check version numbers agree
+        run: |
+          header=$(sed -nE 's/^ \* Version:[[:space:]]+([^[:space:]]+).*/\1/p' one-click-multisite.php)
+          constant=$(sed -nE "s/^define\( 'ONE_CLICK_MULTISITE_VERSION', '([^']+)' \);/\1/p" one-click-multisite.php)
+          stable=$(sed -nE 's/^Stable tag:[[:space:]]+([^[:space:]]+).*/\1/p' readme.txt)
+          echo "Plugin header: $header, ONE_CLICK_MULTISITE_VERSION: $constant, readme Stable tag: $stable"
+
+          status=0
+          if [ -z "$header" ] || [ "$header" != "$constant" ] || [ "$header" != "$stable" ]; then
+            echo "::error::Version mismatch: plugin header $header, ONE_CLICK_MULTISITE_VERSION $constant, readme Stable tag $stable."
+            status=1
+          fi
+
+          if [ "${GITHUB_REF_TYPE}" = "tag" ] && [ "${GITHUB_REF_NAME#v}" != "$header" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match plugin version $header. Bump the version or tag v$header."
+            status=1
+          fi
+
+          exit $status
+
+      - name: Build zip
+        run: bash bin/build-zip.sh
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: one-click-multisite
+          path: dist/one-click-multisite.zip
+
+      - name: Attach to release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/one-click-multisite.zip

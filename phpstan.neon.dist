@@ -1,11 +1,15 @@
 includes:
     - vendor/szepeviktor/phpstan-wordpress/extension.neon
+    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
 
 parameters:
     level: 6
     paths:
-        - ./src
-        - ./one-click-multisite.php
-    excludePaths:
-        - ./vendor
+        - src
+        - templates
+        - one-click-multisite.php
+        - uninstall.php
+    # Defines the plugin constants (ONE_CLICK_MULTISITE_*) for analysis without booting WP.
+    scanFiles:
+        - tests/phpstan/constants.php
     treatPhpDocTypesAsCertain: false

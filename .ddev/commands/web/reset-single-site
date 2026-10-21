@@ -1,0 +1,31 @@
+#!/bin/bash
+## Description: Turn the converted dev network back into a single site, so the conversion can be tested again.
+## Usage: reset-single-site
+## Example: "ddev reset-single-site"
+
+set -e
+
+cd "${DDEV_DOCROOT}"
+
+# 1. wp-config.php: drop the block the plugin added, plus any stray multisite defines.
+sed -i \
+  -e '/^\/\* Multisite\. Added by One Click Multisite\. \*\/$/d' \
+  -e "/^define( *'\(WP_ALLOW_MULTISITE\|MULTISITE\|SUBDOMAIN_INSTALL\|DOMAIN_CURRENT_SITE\|PATH_CURRENT_SITE\|SITE_ID_CURRENT_SITE\|BLOG_ID_CURRENT_SITE\)'/d" \
+  wp-config.php
+
+# 2. Network tables. wp db works without loading WordPress, so the half-converted state is fine.
+PREFIX="$(wp db prefix --skip-plugins --skip-themes 2>/dev/null || echo wp_)"
+for table in blogs blogmeta site sitemeta signups registration_log blog_versions sitecategories; do
+  wp db query "DROP TABLE IF EXISTS ${PREFIX}${table}" --skip-plugins --skip-themes
+done
+# Tables of sub-sites created while testing (wp_2_posts, ...).
+for table in $(wp db tables "${PREFIX}[0-9]*_*" --all-tables --skip-plugins --skip-themes 2>/dev/null | grep -E "^${PREFIX}[0-9]+_" || true); do
+  wp db query "DROP TABLE IF EXISTS ${table}" --skip-plugins --skip-themes
+done
+
+# 3. .htaccess: back to the single-site rules.
+wp rewrite flush --hard --skip-plugins --skip-themes
+
+wp plugin activate "${DDEV_PROJECT}" --skip-themes || true
+
+echo "Back to a single site: ${DDEV_PRIMARY_URL}/wp-admin/tools.php?page=one-click-multisite"

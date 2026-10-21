@@ -3,10 +3,10 @@ type: wordpress
 docroot: .ddev/wordpress
 php_version: "8.1"
 nodejs_version: "22"
-webserver_type: nginx-fpm
+# Apache, not nginx: the plugin writes multisite rewrite rules to .htaccess,
+# so the dev site must actually read them.
+webserver_type: apache-fpm
 xdebug_enabled: false
-additional_hostnames: []
-additional_fqdns: []
 database:
     type: mariadb
     version: "11.8"
@@ -19,6 +19,5 @@ web_environment:
     - WP_TITLE=One Click Multisite
     - ADMIN_USER=admin
     - ADMIN_PASS=admin
-corepack_enable: false
 upload_dirs:
     - wp-content/uploads

@@ -1,25 +1,20 @@
 {
     "name": "one-click-multisite",
-    "description": "Convert a single-site WordPress installation to a multisite network with one click.",
-    "version": "2.0.0",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Convert a single-site WordPress installation into a multisite network with one click.",
     "license": "GPL-2.0-or-later",
     "author": {
-        "name": "Narek Zakarian",
-        "url": "https://github.com/narekzakarian"
-    },
-    "engines": {
-        "node": "^18.0 || ^20.0 || ^22.0"
+        "name": "Narek Zakarian"
     },
     "scripts": {
-        "setup": "composer install && npm ci",
-        "phpcs": "vendor/bin/phpcs",
-        "phpcs:fix": "vendor/bin/phpcbf",
-        "phpstan": "vendor/bin/phpstan analyse --memory-limit=512M",
-        "phpunit": "vendor/bin/phpunit",
-        "phpunit:no-cov": "vendor/bin/phpunit --no-coverage",
+        "setup": "composer install",
+        "phpcs": "composer phpcs",
+        "phpcs:fix": "composer phpcs:fix",
+        "phpstan": "composer phpstan",
+        "tests": "composer phpunit",
         "lint": "npm run phpcs && npm run phpstan",
-        "lint:fix": "npm run phpcs:fix",
-        "test": "npm run phpunit:no-cov",
-        "check": "npm run lint && npm run test"
+        "check": "composer test",
+        "build": "bash bin/build-zip.sh"
     }
 }
