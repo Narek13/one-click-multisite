@@ -40,7 +40,7 @@ jobs:
         run: bash bin/build-zip.sh
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: one-click-multisite
           path: dist/one-click-multisite.zip
