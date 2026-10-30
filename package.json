@@ -1,6 +1,6 @@
 {
     "name": "one-click-multisite",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "private": true,
     "description": "Convert a single-site WordPress installation into a multisite network with one click.",
     "license": "GPL-2.0-or-later",

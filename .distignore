@@ -30,6 +30,6 @@ wp-cli.yml
 CLAUDE.md
 README.md
 SETUP.md
-SUBMISSION.md
+RELEASING.md
 .DS_Store
 /.idea

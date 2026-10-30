@@ -13,8 +13,13 @@ jobs:
   build:
     name: Build plugin zip
     runs-on: ubuntu-latest
+    env:
+      # The SVN repository only exists once WordPress.org has approved the plugin.
+      # Until the SVN secrets are added, tags still build, check and attach the zip,
+      # and the deploy step is skipped instead of failing.
+      SVN_CONFIGURED: ${{ secrets.SVN_USERNAME != '' && secrets.SVN_PASSWORD != '' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check version numbers agree
         run: |
@@ -39,8 +44,14 @@ jobs:
       - name: Build zip
         run: bash bin/build-zip.sh
 
+      - name: Run Plugin Check on the package
+        uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: dist/one-click-multisite
+          slug: one-click-multisite
+
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: one-click-multisite
           path: dist/one-click-multisite.zip
@@ -50,3 +61,15 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: dist/one-click-multisite.zip
+
+      # Publishes the exact package Plugin Check just passed to SVN trunk/ and
+      # tags/<version>/ (version = tag without the leading v), and syncs
+      # .wordpress-org/ to SVN assets/.
+      - name: Deploy to WordPress.org
+        if: startsWith(github.ref, 'refs/tags/') && env.SVN_CONFIGURED == 'true'
+        uses: 10up/action-wordpress-plugin-deploy@stable
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: one-click-multisite
+          BUILD_DIR: dist/one-click-multisite

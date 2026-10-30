@@ -9,6 +9,9 @@ on:
       - 'composer.*'
       - 'phpcs.*'
       - 'phpstan.*'
+      - 'readme.txt'
+      - '.distignore'
+      - 'bin/build-zip.sh'
       - '.github/workflows/php-qa.yml'
 
 jobs:
@@ -20,7 +23,7 @@ jobs:
       matrix:
         php: [ '8.1', '8.2', '8.3', '8.4' ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
@@ -36,7 +39,7 @@ jobs:
     name: PHP_CodeSniffer (WPCS)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
@@ -51,7 +54,7 @@ jobs:
     name: PHPStan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.1'
@@ -60,3 +63,16 @@ jobs:
         run: composer install --no-interaction --prefer-dist
       - name: Run PHPStan
         run: composer phpstan
+
+  plugin-check:
+    name: Plugin Check (release package)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the release package
+        run: bash bin/build-zip.sh
+      - name: Run Plugin Check
+        uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: dist/one-click-multisite
+          slug: one-click-multisite
