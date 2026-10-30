@@ -4,11 +4,11 @@ Tags: multisite, network, network setup, convert, wp-config
 Requires at least: 6.4
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Turn a single WordPress site into a multisite network with one click. No hand-editing of wp-config.php or .htaccess.
+Turn a single WordPress site into a multisite network with one click, and back again. No hand-editing of wp-config.php or .htaccess.
 
 == Description ==
 
@@ -20,13 +20,16 @@ Enabling multisite by hand means following WordPress's Network Setup steps: add 
 * Creates the network database tables with WordPress core's own installer, the same one the Network Setup screen uses.
 * Adds the multisite constants to wp-config.php, above the "stop editing" line. Constants that are already defined are left alone, so running it twice never adds duplicates.
 * Replaces the WordPress block in .htaccess with the multisite rewrite rules core would have asked you to paste.
+* Keeps your permalink structure. WordPress's own installer resets it (to `/blog/%year%/%monthnum%/%day%/%postname%/` on sub-directory networks), which would change every existing URL; the plugin puts yours back.
 * Takes you to the new Network Admin.
 
 You can choose **sub-directories** (example.com/site1) or **sub-domains** (site1.example.com). Options that WordPress does not allow on your install are disabled, with the reason. For example, WordPress disables sub-directories once a site has posts older than a month, and sub-domains are not possible on localhost or an IP address.
 
-**What it does not do**
+**Revert to a single site**
 
-It does not undo a conversion. Read the FAQ before converting a live site.
+Changed your mind? **Network Admin → Settings → Revert to Single Site** turns the network back into a single site, as long as it still holds only the main site. It removes the multisite constants from wp-config.php, restores the standard .htaccess rules, keeps network-activated plugins active, and deletes the network tables. Posts, pages, media, users and settings of the main site are not touched.
+
+The revert refuses to run when it could lose something: when other sites exist (their tables and uploads would be orphaned), or when your account has no Administrator role on the main site (super admin rights disappear with the network, so you would be locked out).
 
 == Installation ==
 
@@ -40,7 +43,15 @@ It does not undo a conversion. Read the FAQ before converting a live site.
 
 = Is the conversion reversible? =
 
-Not with one click. The conversion changes wp-config.php and .htaccess and creates network database tables. To go back to a single site, restore your backup. If you have no backup, remove the block marked "Added by One Click Multisite" from wp-config.php, restore the standard WordPress rules in .htaccess (Settings → Permalinks → Save), and drop the network tables (`wp_blogs`, `wp_site`, `wp_sitemeta` and the others).
+Yes, while the network holds only the main site: go to **Network Admin → Settings → Revert to Single Site**. If you have created other sites, delete them first (export their content if you need it); a single site has no place for their tables and uploads. A full backup restore always works too.
+
+= Does it work for networks I set up by hand? =
+
+The revert does, as long as the multisite constants are plain `define()` lines in wp-config.php. It also removes the `/blog` prefix WordPress adds to the main site's permalinks on sub-directory networks.
+
+= Will my URLs change? =
+
+No. WordPress's network installer resets the main site's permalink structure; the plugin restores yours right after, and a revert keeps it as well.
 
 = Does it work on nginx? =
 
@@ -64,7 +75,7 @@ WordPress recommends it before enabling a network, and it is a good idea on a pr
 
 = What happens when I delete the plugin? =
 
-Your network keeps working. The plugin stores no settings. It only removes the short-lived result notice it keeps for the Network Admin redirect.
+Your network keeps working. The plugin stores no settings. It only removes the short-lived result notices it keeps across redirects. Keep the plugin installed if you may want to revert later.
 
 == Privacy ==
 
@@ -75,13 +86,22 @@ When you choose sub-domains, WordPress core's network installer (`populate_netwo
 == Screenshots ==
 
 1. Tools → Convert to Multisite: the prerequisite checks and the network type choice.
+2. Network Admin → Settings → Revert to Single Site.
 
 == Changelog ==
+
+= 1.1.0 =
+* New: Revert to Single Site (Network Admin → Settings), for networks that only hold the main site.
+* Fix: the main site's permalink structure is kept when converting. WordPress's installer used to reset it, changing existing URLs.
+* Fix: commented-out `define()` lines in wp-config.php are no longer mistaken for real ones.
 
 = 1.0.0 =
 * Initial release.
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+Adds Revert to Single Site and keeps your permalinks when converting.
 
 = 1.0.0 =
 Initial release.

@@ -19,7 +19,7 @@ The site runs on **Apache** (`webserver_type: apache-fpm`), so the .htaccess rul
 |---|---|
 | `ddev launch wp-admin` | wp-admin, `admin` / `admin` |
 | `ddev launch /wp-admin/tools.php?page=one-click-multisite` | the plugin screen |
-| `ddev reset-single-site` | undo a conversion: removes the plugin's wp-config.php block, drops the network and sub-site tables, restores single-site .htaccess |
+| `ddev reset-single-site` | undo a conversion without the plugin (for when the plugin's own revert is the thing under test): removes the multisite defines, drops the network and sub-site tables, restores single-site .htaccess |
 | `ddev composer install` | dev dependencies inside the container |
 
 ### Testing a conversion
@@ -27,7 +27,7 @@ The site runs on **Apache** (`webserver_type: apache-fpm`), so the .htaccess rul
 1. Turn on debugging once: `ddev wp config set WP_DEBUG true --raw && ddev wp config set WP_DEBUG_LOG true --raw`.
 2. Convert from the Tools screen. Sub-directories are only offered while the site has no posts older than a month; to re-enable them on an old dev database, run `ddev wp db query "UPDATE wp_posts SET post_date=NOW(), post_date_gmt=UTC_TIMESTAMP()"`.
 3. Check `wp-content/debug.log` inside the container (`ddev exec -d /var/www/html/.ddev/wordpress tail wp-content/debug.log`).
-4. `ddev reset-single-site` and repeat for the other network type.
+4. Revert from **Network Admin → Settings → Revert to Single Site** (or `ddev reset-single-site`) and repeat for the other network type.
 
 To test the nginx path, set `webserver_type: nginx-fpm` in `.ddev/config.yaml` and `ddev restart`: the Tools screen shows the rewrite-rules warning, and the Network Admin notice points to the nginx guide.
 

@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-One Click Multisite: a WordPress plugin that converts a single-site installation into a multisite network from **Tools → Convert to Multisite**. Intended for WordPress.org (see `SUBMISSION.md`).
+One Click Multisite: a WordPress plugin that converts a single-site installation into a multisite network from **Tools → Convert to Multisite**, and reverts a one-site network from **Network Admin → Settings → Revert to Single Site**. Published on WordPress.org through CI (see `RELEASING.md`).
 
 ## Rules
 
@@ -10,13 +10,14 @@ One Click Multisite: a WordPress plugin that converts a single-site installation
 
 ## Structure
 
-Deliberately mirrors **A11yFleet** and **Order Archive for WooCommerce** (sibling folders in `wp-content/plugins/`), the reference for how these plugins are built: PSR-4 `src/` (`OneClickMultisite\` → `src/`), a `final class Plugin` singleton service locator, constants plus a fallback autoloader in the main file, `templates/`, `adr/`, `docs/`, `bin/build-zip.sh`, and the same phpcs/phpstan/phpunit/DDEV/CI setup.
+Deliberately mirrors **A11yFleet** and **Coldstash** (sibling folders in `wp-content/plugins/`), the reference for how these plugins are built: PSR-4 `src/` (`OneClickMultisite\` → `src/`), a `final class Plugin` singleton service locator, constants plus a fallback autoloader in the main file, `templates/`, `adr/`, `docs/`, `bin/build-zip.sh`, and the same phpcs/phpstan/phpunit/DDEV/CI setup.
 
 - `src/Plugin.php`: service locator and boot (admin only).
-- `src/Admin/`: `ToolsPage`, `ConversionController`, `Notice`, `Assets`.
-- `src/Conversion/`: `Environment` (core's network helpers), `PrerequisiteChecker`, `MultisiteConverter`, the pure `WpConfigEditor` and `HtaccessRules`, and value objects.
+- `src/Admin/`: `ToolsPage`, `ConversionController`, `RevertPage`, `RevertController`, `Notice` (per-user, per-context result transients), `Assets`.
+- `src/Conversion/`: `Environment` (core's network helpers, file system), `PrerequisiteChecker`, `MultisiteConverter`, the pure `WpConfigEditor` and `HtaccessRules`, and value objects.
+- `src/Revert/`: `RevertChecker` and `SingleSiteReverter` (`adr/0004`).
 
-The converter runs core's own installer (`install_network()`, `populate_network()`) the way `wp-admin/network.php` does, then writes .htaccess and finally wp-config.php. See `docs/architecture.md` and `adr/0001`.
+The converter runs core's own installer (`install_network()`, `populate_network()`) the way `wp-admin/network.php` does, restores the permalink structure `populate_network()` resets, then writes .htaccess and finally wp-config.php. See `docs/architecture.md` and `adr/0001`.
 
 Deliberate divergence from the references: DDEV runs **Apache** (`apache-fpm`), so .htaccess is exercised (`adr/0003`).
 
@@ -24,7 +25,7 @@ Deliberate divergence from the references: DDEV runs **Apache** (`apache-fpm`), 
 
 - PHP 8.1+, `declare(strict_types=1)`, `final` classes, constructor promotion, camelCase methods and variables.
 - WordPress formatting (tabs, padded parentheses, `array()`, Yoda conditions), not PSR-12. PHPStan level 6.
-- Capability `setup_network` everywhere, as core's Network Setup uses.
+- Capabilities: `setup_network` for converting (what core's Network Setup uses), `manage_network_options` for reverting.
 - Unit tests: PHPUnit 9.6 + Brain Monkey, `final class … extends TestCase`, GIVEN/WHEN/THEN docblocks. The conversion itself is tested end to end in DDEV, not mocked.
 
 ## Local development
@@ -32,7 +33,7 @@ Deliberate divergence from the references: DDEV runs **Apache** (`apache-fpm`), 
 ```bash
 composer install            # dev tooling
 ddev start                  # WordPress on Apache, plugin activated
-ddev reset-single-site      # undo a conversion
+ddev reset-single-site      # undo a conversion without the plugin (dev only)
 ```
 
 Admin: https://one-click-multisite.ddev.site/wp-admin (admin / admin). Details in `SETUP.md`.
@@ -47,4 +48,4 @@ composer test               # all three (CI gate)
 bash bin/build-zip.sh       # dist/one-click-multisite.zip, exclusions from .distignore
 ```
 
-Run Plugin Check against `dist/`, not the repo (see `SETUP.md`). Tag `vX.Y.Z` to build the release zip in CI.
+Run Plugin Check against `dist/`, not the repo (see `SETUP.md`). Releases are tag-driven and deploy to WordPress.org SVN from CI, same as A11yFleet and Coldstash: see `RELEASING.md`.
