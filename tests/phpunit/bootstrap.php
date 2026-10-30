@@ -21,6 +21,7 @@ if ( ! is_readable( $one_click_multisite_autoload ) ) {
 }
 
 require $one_click_multisite_autoload;
+require __DIR__ . '/Stubs/wp-classes.php';
 
 // Production code reads ABSPATH; point it at a directory that holds no WordPress install.
 if ( ! defined( 'ABSPATH' ) ) {

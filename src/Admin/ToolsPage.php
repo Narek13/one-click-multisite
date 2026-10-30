@@ -102,7 +102,7 @@ final class ToolsPage {
 			return;
 		}
 
-		$notice = $this->notice->pull();
+		$notice = $this->notice->pull( Notice::CONVERT );
 		if ( null === $notice || ! $notice['success'] ) {
 			return;
 		}
@@ -123,7 +123,8 @@ final class ToolsPage {
 		$canConvert          = $this->checker->canConvert();
 		$subdomainAllowed    = $environment->subdomainAllowed();
 		$subdirectoryAllowed = $environment->subdirectoryAllowed();
-		$notice              = $this->notice->pull();
+		$notice              = $this->notice->pull( Notice::CONVERT );
+		$revertNotice        = $this->notice->pull( Notice::REVERT );
 		$action              = ConversionController::ACTION;
 
 		require ONE_CLICK_MULTISITE_DIR . 'templates/tools-page.php';

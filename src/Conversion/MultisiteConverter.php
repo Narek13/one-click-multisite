@@ -44,7 +44,7 @@ final class MultisiteConverter {
 		$base             = $environment->base();
 		$warnings         = array();
 
-		$filesystem = $this->filesystem();
+		$filesystem = $environment->filesystem();
 		if ( null === $filesystem ) {
 			return ConversionResult::failure( __( 'Could not initialise the WordPress file system.', 'one-click-multisite' ) );
 		}
@@ -55,6 +55,11 @@ final class MultisiteConverter {
 		// Creates the network tables and the users.spam/deleted columns.
 		install_network();
 
+		// populate_network() replaces the main site's permalink structure with a fixed
+		// default (/blog/%year%/%monthnum%/%day%/%postname%/ on sub-directory networks),
+		// which would change every existing URL. Remember it and put it back.
+		$permalinkStructure = (string) get_option( 'permalink_structure' );
+
 		$populated = populate_network(
 			1,
 			$domain,
@@ -63,6 +68,8 @@ final class MultisiteConverter {
 			$base,
 			$subdomainInstall
 		);
+
+		$this->restorePermalinkStructure( $permalinkStructure );
 
 		if ( is_wp_error( $populated ) ) {
 			foreach ( $populated->get_error_codes() as $code ) {
@@ -142,14 +149,32 @@ final class MultisiteConverter {
 			return ConversionResult::success();
 		}
 
-		// Keep the file's existing permissions; wp-config.php is often deliberately 0600/0640.
-		$mode = octdec( (string) $filesystem->getchmod( $configFile ) );
-
-		if ( ! $filesystem->put_contents( $configFile, $updated, $mode > 0 ? (int) $mode : FS_CHMOD_FILE ) ) {
+		if ( ! Environment::writeKeepingMode( $filesystem, $configFile, $updated ) ) {
 			return ConversionResult::failure( __( 'Could not write to wp-config.php.', 'one-click-multisite' ) );
 		}
 
 		return ConversionResult::success();
+	}
+
+	/**
+	 * Puts the site's own permalink structure back after populate_network() reset it.
+	 *
+	 * Core prefixes sub-directory networks with /blog to keep main-site posts from
+	 * colliding with new site addresses; core itself still refuses to create a site
+	 * whose name matches an existing page, so keeping the URLs people already link
+	 * to is the safer default for an existing site.
+	 *
+	 * @param string $structure Structure before populate_network() ran.
+	 */
+	private function restorePermalinkStructure( string $structure ): void {
+		global $wp_rewrite;
+
+		if ( (string) get_option( 'permalink_structure' ) === $structure ) {
+			return;
+		}
+
+		$wp_rewrite->set_permalink_structure( $structure );
+		flush_rewrite_rules( false );
 	}
 
 	/**
@@ -168,24 +193,5 @@ final class MultisiteConverter {
 		}
 
 		return ConversionResult::success();
-	}
-
-	/**
-	 * Initialises and returns the direct WordPress file system.
-	 *
-	 * @return WP_Filesystem_Base|null
-	 */
-	private function filesystem(): ?WP_Filesystem_Base {
-		global $wp_filesystem;
-
-		if ( ! function_exists( 'WP_Filesystem' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/file.php';
-		}
-
-		if ( ! WP_Filesystem() || ! $wp_filesystem instanceof WP_Filesystem_Base ) {
-			return null;
-		}
-
-		return $wp_filesystem;
 	}
 }

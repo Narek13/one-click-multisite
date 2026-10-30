@@ -14,18 +14,29 @@ use OneClickMultisite\Conversion\ConversionResult;
 final class Notice {
 
 	/**
-	 * Transient key prefix; the user ID is appended.
+	 * Transient key prefix; the context and user ID are appended.
 	 */
 	public const TRANSIENT_PREFIX = 'one_click_multisite_notice_';
 
 	/**
-	 * Stores a conversion result for the current user.
-	 *
-	 * @param ConversionResult $result Conversion result.
+	 * Result of converting a single site into a network.
 	 */
-	public function store( ConversionResult $result ): void {
+	public const CONVERT = 'convert';
+
+	/**
+	 * Result of reverting a network to a single site.
+	 */
+	public const REVERT = 'revert';
+
+	/**
+	 * Stores a result for the current user.
+	 *
+	 * @param ConversionResult $result  Conversion or revert result.
+	 * @param string           $context self::CONVERT or self::REVERT.
+	 */
+	public function store( ConversionResult $result, string $context = self::CONVERT ): void {
 		set_transient(
-			$this->key(),
+			$this->key( $context ),
 			array(
 				'success'  => $result->succeeded(),
 				'message'  => $result->message(),
@@ -38,10 +49,14 @@ final class Notice {
 	/**
 	 * Returns and clears the stored result for the current user.
 	 *
+	 * Contexts are kept apart so a notice hook on one screen can never consume
+	 * the result another screen is about to show.
+	 *
+	 * @param string $context self::CONVERT or self::REVERT.
 	 * @return array{success: bool, message: string, warnings: list<string>}|null
 	 */
-	public function pull(): ?array {
-		$key    = $this->key();
+	public function pull( string $context = self::CONVERT ): ?array {
+		$key    = $this->key( $context );
 		$notice = get_transient( $key );
 
 		if ( ! is_array( $notice ) ) {
@@ -60,11 +75,12 @@ final class Notice {
 	}
 
 	/**
-	 * Returns the transient key for the current user.
+	 * Returns the transient key for the given context and the current user.
 	 *
+	 * @param string $context self::CONVERT or self::REVERT.
 	 * @return string
 	 */
-	private function key(): string {
-		return self::TRANSIENT_PREFIX . get_current_user_id();
+	private function key( string $context ): string {
+		return self::TRANSIENT_PREFIX . $context . '_' . get_current_user_id();
 	}
 }

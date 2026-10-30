@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace OneClickMultisite\Admin;
 
 /**
- * Enqueues the admin stylesheet, only on the plugin's own screen.
+ * Enqueues the admin stylesheet, only on the plugin's own screens.
  */
 final class Assets {
 
@@ -16,7 +16,7 @@ final class Assets {
 		add_action(
 			'admin_enqueue_scripts',
 			static function ( string $hook ): void {
-				if ( ToolsPage::HOOK_SUFFIX !== $hook ) {
+				if ( ToolsPage::HOOK_SUFFIX !== $hook && RevertPage::HOOK_SUFFIX !== $hook ) {
 					return;
 				}
 

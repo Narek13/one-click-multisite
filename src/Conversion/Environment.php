@@ -74,6 +74,52 @@ final class Environment {
 	}
 
 	/**
+	 * Returns whether WordPress can write files directly in the wp-config.php
+	 * directory, i.e. without asking for FTP or SSH credentials.
+	 *
+	 * @return bool
+	 */
+	public function hasDirectFilesystem(): bool {
+		$this->loadIncludes();
+
+		$config = $this->wpConfigPath();
+
+		return 'direct' === get_filesystem_method( array(), null === $config ? ABSPATH : dirname( $config ) );
+	}
+
+	/**
+	 * Initialises and returns the direct WordPress file system.
+	 *
+	 * @return \WP_Filesystem_Base|null Null when it cannot be initialised.
+	 */
+	public function filesystem(): ?\WP_Filesystem_Base {
+		global $wp_filesystem;
+
+		$this->loadIncludes();
+
+		if ( ! WP_Filesystem() || ! $wp_filesystem instanceof \WP_Filesystem_Base ) {
+			return null;
+		}
+
+		return $wp_filesystem;
+	}
+
+	/**
+	 * Writes a file and keeps its existing permissions: wp-config.php is often
+	 * deliberately 0600 or 0640, and WP_Filesystem would otherwise reset it to 0644.
+	 *
+	 * @param \WP_Filesystem_Base $filesystem File system.
+	 * @param string              $path       Absolute file path.
+	 * @param string              $contents   New contents.
+	 * @return bool
+	 */
+	public static function writeKeepingMode( \WP_Filesystem_Base $filesystem, string $path, string $contents ): bool {
+		$mode = (int) octdec( (string) $filesystem->getchmod( $path ) );
+
+		return (bool) $filesystem->put_contents( $path, $contents, $mode > 0 ? $mode : FS_CHMOD_FILE );
+	}
+
+	/**
 	 * Returns the network domain, e.g. "example.com" (port included if the site URL has one).
 	 *
 	 * @return string

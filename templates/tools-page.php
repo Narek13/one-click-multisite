@@ -9,6 +9,7 @@
  * @var bool $subdomainAllowed
  * @var bool $subdirectoryAllowed
  * @var array{success: bool, message: string, warnings: list<string>}|null $notice
+ * @var array{success: bool, message: string, warnings: list<string>}|null $revertNotice
  * @var string $action
  */
 
@@ -17,11 +18,6 @@ declare(strict_types=1);
 // phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- template variables scoped to include context.
 
 defined( 'ABSPATH' ) || exit;
-
-$hasWarnings = false;
-foreach ( $prerequisites as $prerequisite ) {
-	$hasWarnings = $hasWarnings || $prerequisite->isWarning();
-}
 
 // Pre-select whichever network type is allowed; sub-directories when both are.
 $preferSubdomain = $subdomainAllowed && ! $subdirectoryAllowed;
@@ -39,51 +35,24 @@ $preferSubdomain = $subdomainAllowed && ! $subdirectoryAllowed;
 		</div>
 	<?php endif; ?>
 
+	<?php if ( null !== $revertNotice && $revertNotice['success'] ) : ?>
+		<div class="notice notice-success ocm-notice">
+			<p>
+				<strong><?php esc_html_e( 'Reverted to a single site.', 'one-click-multisite' ); ?></strong>
+				<?php esc_html_e( 'The network settings and tables have been removed. You can convert again at any time.', 'one-click-multisite' ); ?>
+			</p>
+		</div>
+		<?php foreach ( $revertNotice['warnings'] as $warning ) : ?>
+			<div class="notice notice-warning ocm-notice"><p><?php echo esc_html( $warning ); ?></p></div>
+		<?php endforeach; ?>
+	<?php endif; ?>
+
 	<div class="ocm-cards">
 
-		<div class="ocm-card">
-			<div class="ocm-card__header">
-				<h2><?php esc_html_e( 'Prerequisites', 'one-click-multisite' ); ?></h2>
-				<?php if ( ! $canConvert ) : ?>
-					<span class="ocm-badge ocm-badge--fail"><?php esc_html_e( 'Action required', 'one-click-multisite' ); ?></span>
-				<?php elseif ( $hasWarnings ) : ?>
-					<span class="ocm-badge ocm-badge--warn"><?php esc_html_e( 'Ready, with notes', 'one-click-multisite' ); ?></span>
-				<?php else : ?>
-					<span class="ocm-badge ocm-badge--pass"><?php esc_html_e( 'All checks passed', 'one-click-multisite' ); ?></span>
-				<?php endif; ?>
-			</div>
-			<ul class="ocm-card__rows">
-				<?php foreach ( $prerequisites as $prerequisite ) : ?>
-					<?php
-					if ( $prerequisite->passes() ) {
-						$rowClass    = 'ocm-row--pass';
-						$icon        = '✓';
-						$statusLabel = __( 'Passed:', 'one-click-multisite' );
-					} elseif ( $prerequisite->isWarning() ) {
-						$rowClass    = 'ocm-row--warn';
-						$icon        = '!';
-						$statusLabel = __( 'Note:', 'one-click-multisite' );
-					} else {
-						$rowClass    = 'ocm-row--fail';
-						$icon        = '✗';
-						$statusLabel = __( 'Failed:', 'one-click-multisite' );
-					}
-					?>
-					<li class="ocm-row <?php echo esc_attr( $rowClass ); ?>">
-						<span class="ocm-row__icon" aria-hidden="true"><?php echo esc_html( $icon ); ?></span>
-						<div class="ocm-row__body">
-							<span class="ocm-row__label">
-								<span class="screen-reader-text"><?php echo esc_html( $statusLabel ); ?></span>
-								<?php echo esc_html( $prerequisite->label() ); ?>
-							</span>
-							<?php if ( ! $prerequisite->passes() && '' !== $prerequisite->message() ) : ?>
-								<span class="ocm-row__message"><?php echo esc_html( $prerequisite->message() ); ?></span>
-							<?php endif; ?>
-						</div>
-					</li>
-				<?php endforeach; ?>
-			</ul>
-		</div>
+		<?php
+		$ready = $canConvert;
+		require __DIR__ . '/partials/prerequisites.php';
+		?>
 
 		<div class="ocm-card">
 			<div class="ocm-card__header">

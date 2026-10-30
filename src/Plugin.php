@@ -7,10 +7,14 @@ namespace OneClickMultisite;
 use OneClickMultisite\Admin\Assets;
 use OneClickMultisite\Admin\ConversionController;
 use OneClickMultisite\Admin\Notice;
+use OneClickMultisite\Admin\RevertController;
+use OneClickMultisite\Admin\RevertPage;
 use OneClickMultisite\Admin\ToolsPage;
 use OneClickMultisite\Conversion\Environment;
 use OneClickMultisite\Conversion\MultisiteConverter;
 use OneClickMultisite\Conversion\PrerequisiteChecker;
+use OneClickMultisite\Revert\RevertChecker;
+use OneClickMultisite\Revert\SingleSiteReverter;
 
 /**
  * Plugin container + bootstrap.
@@ -58,7 +62,8 @@ final class Plugin {
 	}
 
 	/**
-	 * Boots the plugin: wires the Tools page, its assets and the conversion handler.
+	 * Boots the plugin: wires the Tools page, its assets and the conversion handler,
+	 * and on a network the Revert to Single Site page and its handler.
 	 *
 	 * Everything is admin-only; nothing runs on the front end.
 	 */
@@ -75,6 +80,11 @@ final class Plugin {
 		$this->toolsPage()->register();
 		$this->assets()->register();
 		$this->conversionController()->register();
+
+		if ( is_multisite() ) {
+			$this->revertPage()->register();
+			$this->revertController()->register();
+		}
 	}
 
 	/**
@@ -83,7 +93,34 @@ final class Plugin {
 	 * @return PrerequisiteChecker
 	 */
 	public function prerequisiteChecker(): PrerequisiteChecker {
-		return $this->services[ PrerequisiteChecker::class ] ??= new PrerequisiteChecker( new Environment() );
+		return $this->services[ PrerequisiteChecker::class ] ??= new PrerequisiteChecker( $this->environment() );
+	}
+
+	/**
+	 * Returns the shared revert checker.
+	 *
+	 * @return RevertChecker
+	 */
+	public function revertChecker(): RevertChecker {
+		return $this->services[ RevertChecker::class ] ??= new RevertChecker( $this->environment() );
+	}
+
+	/**
+	 * Returns the shared network reverter.
+	 *
+	 * @return SingleSiteReverter
+	 */
+	public function reverter(): SingleSiteReverter {
+		return $this->services[ SingleSiteReverter::class ] ??= new SingleSiteReverter( $this->revertChecker() );
+	}
+
+	/**
+	 * Returns the shared installation facts.
+	 *
+	 * @return Environment
+	 */
+	private function environment(): Environment {
+		return $this->services[ Environment::class ] ??= new Environment();
 	}
 
 	/**
@@ -114,6 +151,30 @@ final class Plugin {
 	private function toolsPage(): ToolsPage {
 		return $this->services[ ToolsPage::class ] ??= new ToolsPage(
 			$this->prerequisiteChecker(),
+			$this->notice(),
+		);
+	}
+
+	/**
+	 * Returns the shared Revert to Single Site page.
+	 *
+	 * @return RevertPage
+	 */
+	private function revertPage(): RevertPage {
+		return $this->services[ RevertPage::class ] ??= new RevertPage(
+			$this->revertChecker(),
+			$this->notice(),
+		);
+	}
+
+	/**
+	 * Returns the shared revert controller.
+	 *
+	 * @return RevertController
+	 */
+	private function revertController(): RevertController {
+		return $this->services[ RevertController::class ] ??= new RevertController(
+			$this->reverter(),
 			$this->notice(),
 		);
 	}

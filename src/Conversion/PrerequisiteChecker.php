@@ -117,11 +117,9 @@ final class PrerequisiteChecker {
 	 * @return PrerequisiteResult
 	 */
 	private function checkFilesystemMethod(): PrerequisiteResult {
-		$label  = __( 'Direct file system access', 'one-click-multisite' );
-		$config = $this->environment->wpConfigPath();
-		$method = get_filesystem_method( array(), null === $config ? ABSPATH : dirname( $config ) );
+		$label = __( 'Direct file system access', 'one-click-multisite' );
 
-		if ( 'direct' !== $method ) {
+		if ( ! $this->environment->hasDirectFilesystem() ) {
 			return new PrerequisiteResult(
 				$label,
 				false,

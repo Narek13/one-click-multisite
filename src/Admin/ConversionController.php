@@ -48,7 +48,7 @@ final class ConversionController {
 		$subdomainInstall = isset( $_POST['subdomain_install'] ) && '1' === sanitize_key( wp_unslash( $_POST['subdomain_install'] ) );
 
 		$result = $this->converter->convert( $subdomainInstall );
-		$this->notice->store( $result );
+		$this->notice->store( $result, Notice::CONVERT );
 
 		// On success the next request already runs as a network, where the Tools page
 		// no longer exists: continue in the Network Admin (which may ask to log in again).

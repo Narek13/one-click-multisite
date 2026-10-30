@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:       One Click Multisite
- * Description:       Convert a single-site WordPress installation into a multisite network with one click from Tools > Convert to Multisite.
- * Version:           1.0.0
+ * Description:       Convert a single-site WordPress installation into a multisite network with one click from Tools > Convert to Multisite, and revert it back.
+ * Version:           1.1.0
  * Requires at least: 6.4
  * Requires PHP:      8.1
  * Author:            Narek Zakarian
@@ -24,7 +24,7 @@ if ( defined( 'ONE_CLICK_MULTISITE_VERSION' ) ) {
 	return;
 }
 
-define( 'ONE_CLICK_MULTISITE_VERSION', '1.0.0' );
+define( 'ONE_CLICK_MULTISITE_VERSION', '1.1.0' );
 define( 'ONE_CLICK_MULTISITE_FILE', __FILE__ );
 define( 'ONE_CLICK_MULTISITE_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ONE_CLICK_MULTISITE_URL', plugin_dir_url( __FILE__ ) );

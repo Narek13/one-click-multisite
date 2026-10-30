@@ -129,4 +129,81 @@ final class WpConfigEditorTest extends TestCase {
 		self::assertStringContainsString( "define( 'SUBDOMAIN_INSTALL', false );", $result );
 		self::assertStringContainsString( "define( 'SITE_ID_CURRENT_SITE', 1 );", $result );
 	}
+
+	/**
+	 * GIVEN a commented-out define, as multisite tutorials often leave behind
+	 * WHEN constants are inserted
+	 * THEN the constant counts as missing and is added for real.
+	 */
+	public function testIgnoresCommentedOutDefines(): void {
+		$contents = str_replace( '/* That', "// define( 'MULTISITE', true );\n# define( 'SUBDOMAIN_INSTALL', true );\n/* That", self::SAMPLE );
+
+		$result = ( new WpConfigEditor() )->insert(
+			$contents,
+			array(
+				'MULTISITE'         => true,
+				'SUBDOMAIN_INSTALL' => false,
+			)
+		);
+
+		self::assertIsString( $result );
+		self::assertStringContainsString( "\ndefine( 'MULTISITE', true );", $result );
+		self::assertStringContainsString( "\ndefine( 'SUBDOMAIN_INSTALL', false );", $result );
+	}
+
+	/**
+	 * GIVEN a wp-config.php converted by this plugin
+	 * WHEN the multisite constants are removed
+	 * THEN the result is the original file again.
+	 */
+	public function testRemoveUndoesInsert(): void {
+		$editor    = new WpConfigEditor();
+		$constants = array(
+			'WP_ALLOW_MULTISITE'   => true,
+			'MULTISITE'            => true,
+			'SUBDOMAIN_INSTALL'    => false,
+			'DOMAIN_CURRENT_SITE'  => 'example.com',
+			'PATH_CURRENT_SITE'    => '/',
+			'SITE_ID_CURRENT_SITE' => 1,
+			'BLOG_ID_CURRENT_SITE' => 1,
+		);
+
+		$converted = $editor->insert( self::SAMPLE, $constants );
+
+		self::assertIsString( $converted );
+		self::assertSame( self::SAMPLE, $editor->remove( $converted, array_keys( $constants ) ) );
+	}
+
+	/**
+	 * GIVEN constants added by hand, with different quoting, spacing and a trailing comment
+	 * WHEN they are removed
+	 * THEN every one of them is gone and the rest of the file is untouched.
+	 */
+	public function testRemoveHandlesHandWrittenDefines(): void {
+		$contents = str_replace( '/* That', "define(\"MULTISITE\",true); // network\n  define( 'PATH_CURRENT_SITE' , '/' ) ;\n/* That", self::SAMPLE );
+
+		self::assertSame( self::SAMPLE, ( new WpConfigEditor() )->remove( $contents, array( 'MULTISITE', 'PATH_CURRENT_SITE' ) ) );
+	}
+
+	/**
+	 * GIVEN a constant defined inside a condition
+	 * WHEN the constants are removed
+	 * THEN null is returned instead of a half-edited file.
+	 */
+	public function testRemoveRefusesDefinesItCannotRemoveSafely(): void {
+		$contents = str_replace( '/* That', "if ( ! defined( 'MULTISITE' ) ) { define( 'MULTISITE', true ); }\n/* That", self::SAMPLE );
+
+		self::assertNull( ( new WpConfigEditor() )->remove( $contents, array( 'MULTISITE' ) ) );
+	}
+
+	/**
+	 * GIVEN a commented-out define
+	 * WHEN the constants are removed
+	 * THEN it is left alone and does not block the removal.
+	 */
+	public function testRemoveLeavesCommentedDefinesAlone(): void {
+		$contents = str_replace( '/* That', "// define( 'MULTISITE', true );\n/* That", self::SAMPLE );
+
+		self::assertSame( $contents, ( new WpConfigEditor() )->remove( $contents, array( 'MULTISITE' ) ) );
+	}
 }

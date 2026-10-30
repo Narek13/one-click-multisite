@@ -59,4 +59,35 @@ final class HtaccessRulesTest extends TestCase {
 	public function testPassesAuthorizationHeader(): void {
 		self::assertSame( 'RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]', HtaccessRules::lines( true, '/' )[1] );
 	}
+
+	/**
+	 * GIVEN a site with pretty permalinks in a sub-folder
+	 * WHEN the single-site rules are built
+	 * THEN they match what WP_Rewrite::mod_rewrite_rules() writes.
+	 */
+	public function testSingleSiteRulesMatchCore(): void {
+		self::assertSame(
+			array(
+				'<IfModule mod_rewrite.c>',
+				'RewriteEngine On',
+				'RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]',
+				'RewriteBase /blog/',
+				'RewriteRule ^index\.php$ - [L]',
+				'RewriteCond %{REQUEST_FILENAME} !-f',
+				'RewriteCond %{REQUEST_FILENAME} !-d',
+				'RewriteRule . /blog/index.php [L]',
+				'</IfModule>',
+			),
+			HtaccessRules::singleSiteLines( '/blog/' )
+		);
+	}
+
+	/**
+	 * GIVEN a site with plain permalinks
+	 * WHEN the single-site rules are built
+	 * THEN there are none, as core writes an empty block.
+	 */
+	public function testSingleSiteRulesAreEmptyForPlainPermalinks(): void {
+		self::assertSame( array(), HtaccessRules::singleSiteLines( '/', false ) );
+	}
 }
